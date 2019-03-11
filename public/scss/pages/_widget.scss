@@ -1,0 +1,136 @@
+.widget {
+  margin-top: 0;
+  min-height: 100%;
+
+  .menu-list {
+    display: flex;
+    align-self: stretch;
+    list-style: none;
+    margin: 0;
+    @include transition-default(background-color);
+
+    &:hover, &.toggled {
+      background-color: darken(#092b2a,3%);
+
+      @media screen and (max-width: 39.9375em) {
+        background-color: transparent;
+      }
+    }
+
+    &__icon {
+      font-size: 1.4em;
+      color: white;
+      pointer-events: none;
+    }
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 4em;
+      @include transition-default(background-color);
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(#092b2a,3%);
+      }
+
+      @media screen and (max-width: 39.9375em) {
+        width: 100%;
+      }
+    }
+
+    &__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      font-weight: $font-weight-semi-bold;
+      padding: 0.75em;
+      color: white;
+
+      &:hover {
+        color: white;
+      }
+
+      @media screen and (max-width: 39.9375em) {
+        justify-content: flex-start;
+      }
+    }
+
+    &__text {
+      margin-right: 1em;
+      color: white;
+      pointer-events: none;
+    }
+  }
+}
+
+.widget-loader {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  background: rgb(35, 86, 67);
+  z-index: -1;
+  pointer-events: none;
+  visibility: hidden;
+  font-size: 64px;
+  opacity: 0;
+  transition: opacity ease-in-out 0.3s 0s, z-index 0s 0.3s;
+
+  &.show {
+    opacity: 1;
+    z-index: 99999;
+    visibility: visible;
+    transition: opacity ease-in-out 0.3s 0s, z-index 0s 0s;
+  }
+
+  .loader__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .content__spinner {
+      position: relative;
+
+      &:before, &:after {
+        content: "";
+        position: relative;
+        display: block;
+      }
+
+      &:before {
+        animation: spinner 2.5s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+        width: 1em;
+        height: 1em;
+        background-color: #fbc707;
+      }
+
+      &:after {
+        animation: shadow 2.5s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+        bottom: -.5em;
+        height: .25em;
+        border-radius: 50%;
+        background-color: rgba(#000,0.2);
+      }
+    }
+  }
+}
+
+@keyframes spinner {
+  50% {
+    border-radius: 50%;
+    transform: scale(0.5) rotate(360deg);
+  }
+  100% {
+    transform: scale(1) rotate(720deg);
+  }
+}
+@keyframes shadow {
+  50% {
+    transform: scale(0.5);
+    background-color: rgba(#000,0.1);
+  }
+}

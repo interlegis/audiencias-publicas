@@ -4,7 +4,7 @@ from django.contrib import admin
 from apps.core import urls as core_urls
 from apps.notification import urls as notification_urls
 from rest_framework.authtoken.models import Token
-
+from apps.accounts.views import *
 
 if settings.URL_PREFIX:
     prefix = r'^%s/' % (settings.URL_PREFIX)
@@ -14,7 +14,8 @@ else:
 urlpatterns = [
     url(prefix + r'', include(core_urls)),
     url(prefix + r'notification/', include(notification_urls)),
-    url(prefix + r'admin/', include(admin.site.urls)),
+    url(prefix + r'admin/', admin.site.urls),
+    url(prefix + r'userLogout', userLogout, name='user_logout'),
 ]
 
 admin.site.unregister(Token)

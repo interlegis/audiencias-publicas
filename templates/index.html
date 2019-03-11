@@ -63,13 +63,13 @@
                     <div class="calendar-table__event-title">{% if agenda.date|date:"H" == "00" %}Horário não informado{% else %}{{ agenda.date|date:"H"}}h{{ agenda.date|date:"i"}}{% endif %} - {{ agenda.reunion_type }} - {{ agenda.title_reunion }}</div>
                     <div class="calendar-table__description">
                       {% if agenda.reunion_theme %}
-                      <div class="content-truncate">{{ agenda.reunion_theme|truncatechars:150 }}</div>  
+                      <div class="content-truncate">{{ agenda.reunion_theme|truncatechars:150 }}</div>
                       <div class="content-full hide">{{ agenda.reunion_object|linebreaks }}</div>
                       <div class="show-more"><a>Ver mais</a></div>
                       {% elif agenda.reunion_object %}
                       <div class="content-truncate">{{ agenda.reunion_object|truncatechars:150 }}</div>
                       <div class="content-full hide">{{ agenda.reunion_object|linebreaks }}</div>
-                      <div class="show-more"><a>Ver mais</a></div>  
+                      <div class="show-more"><a>Ver mais</a></div>
                       {% endif %}
                     </div>
                   </td>

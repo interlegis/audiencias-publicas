@@ -5,7 +5,7 @@ from apps.core.models import TimestampedMixin, Room
 
 
 class ParticipantNotification(TimestampedMixin):
-    room = models.ForeignKey(Room, verbose_name=_('room'))
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name=_('room'))
     emails = models.TextField()
     subject = models.CharField(_('subject'), max_length=100)
     content = models.TextField(_('content'))

@@ -1,0 +1,21 @@
+.question-block__info {
+  align-items: baseline;
+  display: flex;
+  margin-bottom: .5em;
+
+  .info__username {
+    font-weight: $font-weight-bold;
+  }
+
+  .info__timestamp {
+    color: hsl(0, 0, 45%);
+    font-size: .7em;
+    font-weight: $font-weight-regular;
+    margin-right: 0.5em;
+  }
+}
+
+.question-block__text {
+  margin-bottom: 0;
+  word-break: break-word;
+}

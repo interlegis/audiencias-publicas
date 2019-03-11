@@ -106,7 +106,7 @@ class Room(TimestampedMixin):
                                                                'created')
 
     def get_absolute_url(self):
-        return "%s/sala/%i" % (settings.FORCE_SCRIPT_NAME, self.pk)
+        return "/sala/%i" % (self.pk)
 
     def html_body(self):
         return render_to_string('includes/home_video.html', {'room': self})
@@ -142,8 +142,8 @@ class Room(TimestampedMixin):
 
 
 class UpDownVote(TimestampedMixin):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
-    question = models.ForeignKey('Question', related_name='votes',
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'))
+    question = models.ForeignKey('Question', related_name='votes', on_delete=models.CASCADE,
                                  verbose_name=_('question'))
     vote = models.BooleanField(_('vote'), default=False,
                                choices=((True, _('Up Vote')),
@@ -159,9 +159,9 @@ class UpDownVote(TimestampedMixin):
 
 
 class Message(TimestampedMixin):
-    room = models.ForeignKey(Room, related_name='messages', null=True,
+    room = models.ForeignKey(Room, related_name='messages', null=True, on_delete=models.CASCADE,
                              verbose_name=_('room'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              verbose_name=_('user'))
     message = models.TextField(_('message'))
 
@@ -179,7 +179,7 @@ class Message(TimestampedMixin):
 
 
 class Video(TimestampedMixin):
-    room = models.ForeignKey(Room, related_name='videos',
+    room = models.ForeignKey(Room, related_name='videos', on_delete=models.CASCADE,
                              verbose_name=_('room'))
     video_id = models.CharField(_('youtube id'), max_length=200)
     title = models.CharField(_('title'), max_length=200, null=True, blank=True)
@@ -207,9 +207,9 @@ class Video(TimestampedMixin):
 
 
 class Question(TimestampedMixin):
-    room = models.ForeignKey(Room, related_name='questions', null=True,
+    room = models.ForeignKey(Room, related_name='questions', null=True, on_delete=models.CASCADE,
                              verbose_name=_('room'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('user'))
     question = models.TextField(_('question'), max_length=300)
     video = models.ForeignKey(Video, verbose_name=_('video'), null=True,
                               related_name='questions',
@@ -253,7 +253,7 @@ class Question(TimestampedMixin):
 
 
 class RoomAttachment(TimestampedMixin):
-    room = models.ForeignKey(Room, related_name='attachments',
+    room = models.ForeignKey(Room, related_name='attachments', on_delete=models.CASCADE,
                              verbose_name=_('room'))
     title = models.CharField(_('title'), max_length=200, null=True, blank=True)
     url = models.URLField(verbose_name=_('link'))

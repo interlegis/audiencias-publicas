@@ -119,7 +119,8 @@
     align-items: start;
     margin-top: 2rem;
     padding: 1rem;
-    background-color: $color-edem-main;
+    border: 1px solid #244f6b;
+    background-color: #2b5c7b;
     overflow-x: auto;
     perspective: none !important; // Necessary to override mixitup inline styles when animating.
 

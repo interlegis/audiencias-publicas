@@ -42,7 +42,7 @@ services:
       - 'web'
 
   web:
-    image: labhackercd/audiencias-publicas
+    image: audiencias_teste:latest
     command: ./start-web.sh
     restart: on-failure
     links:
@@ -55,6 +55,10 @@ services:
       ADMIN_EMAIL: admin@admin.com
       ADMIN_USERNAME: admin
       DATABASE_URL: postgres://root:audiencias@db:5432/audiencias
+      DATABASE_HOST: db
+      DATABASE_PASSWORD: audiencias
+      DATABASE_NAME: audiencias
+      DATABASE_USER: root
       DEBUG: 'False'
       REDIS_SERVER: redis
       WEBSERVICE_URL: https://infoleg.camara.leg.br/ws-pauta/evento/interativo

@@ -27,9 +27,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS',
-                       cast=Csv(lambda x: x.strip().strip(',').strip()),
-                       default='*')
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -55,6 +53,8 @@ INSTALLED_APPS = (
     'corsheaders',
     'debug_toolbar',
     'macros',
+
+    'mozilla_django_oidc',
 
     'djangobower',
     'compressor',
@@ -96,19 +96,31 @@ WEBSERVICE_URL = config('WEBSERVICE_URL', default='')
 RECAPTCHA_SITE_KEY = config('RECAPTCHA_SITE_KEY', default='')
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='')
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
+    'corsheaders.middleware.CorsMiddleware',
     'apps.accounts.middlewares.AudienciasRemoteUser',
 )
+
+# MIDDLEWARE_CLASSES = (
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#     'django.middleware.security.SecurityMiddleware',
+#     #'corsheaders.middleware.CorsMiddleware',
+#     'mozilla_django_oidc.middleware.SessionRefresh',
+# )
 
 ROOT_URLCONF = 'audiencias_publicas.urls'
 
@@ -122,11 +134,8 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
                 'constance.context_processors.config',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-                'apps.core.processors.analytics',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -138,14 +147,21 @@ WSGI_APPLICATION = 'audiencias_publicas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.' + config('DATABASE_ENGINE',
-                                                 default='sqlite3'),
-        'NAME': config('DATABASE_NAME', default='db.sqlite3'),
-        'USER': config('DATABASE_USER', default=''),
-        'PASSWORD': config('DATABASE_PASSWORD', default=''),
-        'HOST': config('DATABASE_HOST', default=''),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DATABASE_NAME', default='audiencias'),
+        'USER': config('DATABASE_USER', default='root'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='audiencias'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
         'PORT': config('DATABASE_PORT', default=''),
     }
 }
@@ -235,35 +251,49 @@ if DEBUG:
                                  ' -r "{outfile}"'
 
 # Authentication stuffs
-
 URL_PREFIX = config('URL_PREFIX', default='')
-FORCE_SCRIPT_NAME = config('FORCE_SCRIPT_NAME', default='')
-LOGIN_URL = config('LOGIN_URL', default='/login/')
-LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL', default='/')
-LOGOUT_REDIRECT_URL = config('LOGOUT_REDIRECT_URL', default='/')
+OIDC_RP_CLIENT_ID = '0949df8a7aaa7fc0a0ddcc290b5a6b9227bc1993536f6afadb7676a740115765' #Local
+OIDC_RP_CLIENT_SECRET = '8f2e3a51e74c484aa8a5526d2a0b780d593f5f990ad38a33a708105fa1e6c2f4' #Local
+OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:3000/oauth/authorize' #Local
+OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:3000/oauth/token' #Local
+OIDC_OP_USER_ENDPOINT = 'http://localhost:3000/oauth/userinfo' #Local
+OIDC_RP_SIGN_ALGO = 'RS256' #Local
+OIDC_OP_JWKS_ENDPOINT = 'http://localhost:3000/oauth/discovery/keys' #Local
+LOGIN_REDIRECT_URL = '/' #Local
+LOGOUT_REDIRECT_URL = '/' #Local
+OIDC_RP_SCOPES = 'openid profile email' #Local
+OIDC_VERIFY_JWT = False #Local
+OIDC_USE_NONCE = False #Local
 
 SESSION_COOKIE_NAME = config('SESSION_COOKIE_NAME', default='sessionid')
 SESSION_COOKIE_PATH = config('SESSION_COOKIE_PATH', default='/')
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'},
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 36000,
+}
+
 # Social auth
 if config('ENABLE_REMOTE_USER', default=0, cast=bool):
     AUTHENTICATION_BACKENDS = (
-        'apps.accounts.backends.AudienciasAuthBackend',
+        'apps.core.login.MyOIDCAB',
+        'django.contrib.auth.backends.ModelBackend',
     )
 else:
     AUTHENTICATION_BACKENDS = (
-        'rules.permissions.ObjectPermissionBackend',
+        'apps.core.login.MyOIDCAB',
         'django.contrib.auth.backends.ModelBackend',
     )
 
 # Email configuration
 
-EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-EMAIL_PORT = config('EMAIL_PORT', cast=int, default=587)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
+# EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+# EMAIL_PORT = config('EMAIL_PORT', cast=int, default=6379)
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='admin@admin.com')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='admin')
+# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
+# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 
 CHANNEL_LAYERS = {
     "default": {
@@ -300,22 +330,22 @@ LOGGING = {
     },
 }
 
-NOTIFICATION_EMAIL_LIST = config(
-    'NOTIFICATION_EMAIL_LIST',
-    cast=Csv(lambda x: x.strip().strip(',').strip()),
-    default=''
-)
+# NOTIFICATION_EMAIL_LIST = config(
+#     'NOTIFICATION_EMAIL_LIST',
+#     cast=Csv(lambda x: x.strip().strip(',').strip()),
+#     default=''
+# )
 
 # EDITABLE SETTINGS
 CONSTANCE_CONFIG = {
-    'SITE_NAME': ('Câmara dos Deputados', 'Nome do site', str),
+    'SITE_NAME': ('Senado', 'Nome do site', str),
     'HOME_DESCRIPTION': ('Acompanhe ao vivo e participe enviando perguntas aos '
-                         'deputados!', 'Descrição que acompanha a logo', str),
-    'QUESTIONS_DESCRIPTION': ('Faça sua pergunta ou apoie outra já feita. As '
-                              'perguntas mais votadas serão encaminhadas à '
-                              'Mesa para serem respondidas.', 'Descrição da '
+                         'senadores!', 'Descricao que acompanha a logo', str),
+    'QUESTIONS_DESCRIPTION': ('Faca sua pergunta ou apoie outra ja feita. As '
+                              'perguntas mais votadas serao encaminhadas a '
+                              'Mesa para serem respondidas.', 'Descricao da '
                               'aba de perguntas', str),
-    'ROOM_OBJECT': ('Pauta', 'Título do objeto da reunião', str),
+    'ROOM_OBJECT': ('Pauta', 'Titulo do objeto da reuniao', str),
     'WORDS_BLACK_LIST': (
         'merda, cu, cuzao, cuzona, cusao, cusona, bunda, fodido, fodida, foda, foder, '
         'fodedor, fudido, fudida, fuder, chupa, chupada, chupador, chupadora, '
@@ -327,26 +357,26 @@ CONSTANCE_CONFIG = {
         'grelinho, filhodaputa, filhosdaputa, puta, fdps, siririca, punheta, trepar, '
         'trepada, trepadeira, caralho, caralhu, karalho, karalhu, tomarnocu, '
         'tomanocu, vadia, bosta, quenga, rabo, bolsa, cuzinho, piroca, pqp, puta que '
-        'pariu, porra, carai, cú, viado, fdp, vtnc, corno, bicha, bixa, viado, viadinho, '
-        'pederasta, filho da puta, bundao, bundão, filho de uma egua, '
-        'filho de uma égua, achacador, achacadora, achacadores, achacar, babaca, '
-        'bucetas, cagar, cagaram, cambada, caráleo, corja, cornão, covarde, covardes, '
-        'cretino, cus, cús, cusão, cuzão, cuzinho, cuzona, danar, desgraça, drosoba, '
-        'enrabar, escória, escroto, escrotas, escrotos, fodão, fodona, fudendo, '
-        'fuder, idiota, imundo, imundos, ku, kú, lascar, merdas, patifaria, pilantra, '
+        'pariu, porra, carai, cu, viado, fdp, vtnc, corno, bicha, bixa, viado, viadinho, '
+        'pederasta, filho da puta, bundao, bundao, filho de uma egua, '
+        'filho de uma egua, achacador, achacadora, achacadores, achacar, babaca, '
+        'bucetas, cagar, cagaram, cambada, caraleo, corja, cornao, covarde, covardes, '
+        'cretino, cus, cus, cusao, cuzao, cuzinho, cuzona, danar, desgraca, drosoba, '
+        'enrabar, escoria, escroto, escrotas, escrotos, fodao, fodona, fudendo, '
+        'fuder, idiota, imundo, imundos, ku, ku, lascar, merdas, patifaria, pilantra, '
         'pilantragem, pilantras, poha, porcaria, putas, putos, sacanagem, safadeza, '
-        'safado, safados, salafrário, salafrários, vagabundagem, vagabundo, '
+        'safado, safados, salafrario, salafrarios, vagabundagem, vagabundo, '
         'vagabundos, veadinho, veadinhos',
         'Lista de palavras e termos censurados. Devem ser separadas por '
-        'vírgula.',
+        'virgula.',
         str
     )
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'Geral': ('SITE_NAME', 'WORDS_BLACK_LIST'),
-    'Página inicial': ('HOME_DESCRIPTION', ),
-    'Página de sala': ('QUESTIONS_DESCRIPTION', 'ROOM_OBJECT'),
+    'Pagina inicial': ('HOME_DESCRIPTION', ),
+    'Pagina de sala': ('QUESTIONS_DESCRIPTION', 'ROOM_OBJECT'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

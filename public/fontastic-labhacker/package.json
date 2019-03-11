@@ -1,0 +1,19 @@
+{
+  "name": "fontastic-labhacker",
+  "version": "1.0.0",
+  "description": "Fontastic LabHacker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labhackercd/fontastic-labhacker.git"
+  },
+  "author": "labhackercd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labhackercd/fontastic-labhacker/issues"
+  },
+  "homepage": "https://github.com/labhackercd/fontastic-labhacker#readme"
+}

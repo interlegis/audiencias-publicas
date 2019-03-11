@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^reset/done/$',
         auth_views.password_reset_complete,
         name='password_reset_complete'),
+    url(r'^oidc/', include('mozilla_django_o    idc.urls')),
 ]

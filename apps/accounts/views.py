@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from .forms import SignUpForm
+from django.contrib.auth import logout
 
 
 class SignUpView(TemplateView):
@@ -26,3 +27,8 @@ class SignUpView(TemplateView):
         user.save()
 
         return redirect(reverse('home'))
+
+
+def userLogout(request):
+    logout(request)
+    return redirect('http://localhost:3000/log_out?externo=' + 'http://localhost:8000/') #Alterar essa URL para produção

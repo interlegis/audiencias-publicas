@@ -1,0 +1,67 @@
+[class^="send-form"] {
+  background-color: hsl(0, 0, 92%);
+  display: flex;
+  flex-shrink: 0;
+  height: 5em;
+  padding: 1em;
+  z-index: 1;
+
+  @include bp-mediumdown {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 100vw;
+    z-index: 10;
+  }
+
+  .input {
+    font-size: 1em;
+    height: 3em;
+    margin: 0;
+    resize: none;
+  }
+
+  .actions {
+    margin: 0 0 0 .5em;
+
+    @include bp-largedown {
+      height: 100%;
+    }
+
+    @include bp-largeonly {
+      align-items: center;
+    }
+
+    @include bp-largeup {
+      display: flex;
+      flex: 1 0 auto;
+    }
+  }
+
+  .actions__character-counter {
+    color: #fff;
+    display: flex;
+    font-size: .8em;
+    font-weight: $font-weight-bold;
+
+    @include bp-largeup {
+      align-items: center;
+      padding: 0 1em 0 .5em;
+    }
+
+    .character-counter__max-length {
+      color: $color-primary-xxlight;
+    }
+  }
+
+  .actions > .button {
+    background-color: $color-primary-xxlight;
+    border: 0;
+    color: #fff;
+    display: flex;
+    font-size: .9em;
+    font-weight: $font-weight-semi-bold;
+    margin: 0;
+    padding: 0 .5em 0 1em;
+  }
+}

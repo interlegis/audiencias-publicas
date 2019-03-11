@@ -19,6 +19,9 @@ from django.views.decorators.csrf import csrf_exempt
 from itertools import chain
 from constance import config
 from apps.core.forms import RoomAttachmentForm, VideoForm
+from apps.accounts.models import UserProfile
+import requests
+import json
 
 
 def redirect_to_room(request, cod_reunion):
@@ -306,7 +309,6 @@ def order_videos(request, room_id):
     else:
         return HttpResponseForbidden()
 
-
 class VideoDetail(DetailView):
     model = Room
     template_name = 'room.html'
@@ -324,8 +326,14 @@ class VideoDetail(DetailView):
         return context
 
     def get_object(self, queryset=None):
+        profile = UserProfile.objects.get(user_id = self.request.user.id)
+        print("DSFASDFAS")
+        print(profile.access_key)
+        print("DSFASDFAS")
+        # Fazer requisição e tratar
         obj = super(VideoDetail, self).get_object(queryset=queryset)
         if obj.is_active:
+            print("AQUOI", obj)
             return obj
         else:
             raise Http404()
@@ -445,7 +453,6 @@ class QuestionDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(QuestionDetail, self).get_context_data(**kwargs)
         context['domain'] = Site.objects.get_current().domain
-        context['domain'] += settings.FORCE_SCRIPT_NAME
 
         return context
 

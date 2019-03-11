@@ -18,7 +18,8 @@ class User(AbstractUser):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='profile')
     avatar_url = models.URLField(blank=True, null=True)
+    access_key = models.CharField(max_length=100,blank=False, null=False)
     is_admin = models.BooleanField(default=False)

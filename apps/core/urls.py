@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.routers import DefaultRouter
 from apps.core.views import (VideoDetail, RoomQuestionList, ClosedVideos,
@@ -46,7 +46,8 @@ urlpatterns = [
     url(r'^widget/(?P<pk>\d+)/?$',
         ensure_csrf_cookie(WidgetVideoDetail.as_view()),
         name='widget_index'),
-    url(r'^blacklist/?$', censorship, name='censorship')
+    url(r'^blacklist/?$', censorship, name='censorship'),
+    url(r'^oidc/', include('mozilla_django_oidc.urls')),
 ]
 
 router = DefaultRouter()

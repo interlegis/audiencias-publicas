@@ -1,0 +1,130 @@
+.room-questions-body {
+  margin-top: 0;
+}
+
+.bem-room-questions {
+  background: linear-gradient(45deg, $color-primary-xlight 0%, $color-primary 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1em;
+  min-height: 100vh;
+
+  > .wrapper {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    > .flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      > .numberofquestions {
+        color: $color-primary-xlight;
+        text-transform: uppercase;
+        font-size: 0.8em;
+        font-weight: $font-weight-bold;
+        background-color: #fff;
+        padding: 0.75rem 1rem;
+        border-radius: 2rem;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(#000, 0.3);
+      }
+    }
+  }
+
+
+}
+
+.room-questions__title {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 1.4em;
+  font-weight: $font-weight-bold;
+  line-height: 1em;
+  text-transform: uppercase;
+
+  &::after {
+    background-color: $color-accent;
+    content: '';
+    display: flex;
+    flex: 1;
+    height: .7em;
+    margin-left: 1em;
+  }
+}
+
+.room-questions__video-info {
+  font-size: 1em;
+  font-weight: $font-weight-regular;
+  margin-bottom: 0;
+
+  .video-info__icon {
+    color: $color-live-blink;
+    font-size: .7em;
+  }
+
+  .video-info__text {
+    color: #fff;
+    text-transform: uppercase;
+  }
+}
+
+.room-questions__list {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin: 1em -.5em 0;
+
+  .list__item {
+    display: flex;
+    flex: 0 0 auto;
+    margin: .5em 0;
+    padding: 0 .5em;
+
+    @include bp-largeup {
+      width: 50%;
+    }
+  }
+
+  .item__vote-block {
+    align-items: center;
+    background-color: $color-primary-xxlight;
+    color: #fff;
+    display: flex;
+    flex-basis: 6em;
+    flex-direction: column;
+    font-weight: $font-weight-bold;
+    justify-content: center;
+
+    @include bp-largeup {
+      font-size: 115%;
+    }
+  }
+
+  .vote-block__total-votes {
+    font-size: 1.2em;
+  }
+
+  .item__question-block {
+    background-color: #fff;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: .75em;
+
+    @include bp-mediumdown {
+      margin: 0;
+    }
+  }
+}
+
+.room-questions__empty {
+  color: $color-primary-xlight;
+  font-size: 1.5em;
+  font-weight: $font-weight-semi-bold;
+  margin-top: 1em;
+  text-align: center;
+}
