@@ -8,12 +8,12 @@
     content: '';
     display: block;
     position: absolute;
-    top: calc(100% - 1rem);
+    top: 30px;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: -1;
-    background-color: $color-edem-main;
+    background-color: #fbc707;
   }
 
   @include bp-largedown {
