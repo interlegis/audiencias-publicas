@@ -288,12 +288,12 @@ else:
 
 # Email configuration
 
-# EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-# EMAIL_PORT = config('EMAIL_PORT', cast=int, default=6379)
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='admin@admin.com')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='admin')
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
-# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_PORT = config('EMAIL_PORT', cast=int, default=6379)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='admin@admin.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='admin')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='')
 
 CHANNEL_LAYERS = {
     "default": {
@@ -330,11 +330,11 @@ LOGGING = {
     },
 }
 
-# NOTIFICATION_EMAIL_LIST = config(
-#     'NOTIFICATION_EMAIL_LIST',
-#     cast=Csv(lambda x: x.strip().strip(',').strip()),
-#     default=''
-# )
+NOTIFICATION_EMAIL_LIST = config(
+    'NOTIFICATION_EMAIL_LIST',
+    cast=Csv(lambda x: x.strip().strip(',').strip()),
+    default=''
+)
 
 # EDITABLE SETTINGS
 CONSTANCE_CONFIG = {
