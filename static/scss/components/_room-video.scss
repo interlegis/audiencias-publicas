@@ -123,6 +123,7 @@
     background-color: #2b5c7b;
     overflow-x: auto;
     perspective: none !important; // Necessary to override mixitup inline styles when animating.
+    border-radius: 5px;
 
     @include bp-largedown {
       padding: 0.75rem;
@@ -271,5 +272,6 @@
     position: relative;
     margin-top: 1rem;
     z-index: 2;
+    border-radius: 5px;
   }
 }
