@@ -60,4 +60,8 @@ router.register(r'api/vote', api.VoteViewSet)
 urlpatterns += router.urls
 urlpatterns += [
     url(r'^api/$', api.api_root),
+    url(r'^api/roomInformations/?$', api.roomInformations,
+        name='roomInformations'),
+    url(r'^api/systemStatus/?$', api.systemStatus,
+        name='systemStatus'),
 ]

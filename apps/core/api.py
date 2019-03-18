@@ -127,6 +127,27 @@ class RoomViewSet(viewsets.ModelViewSet):
         'location')
     ordering_fields = '__all__'
 
+@api_view(['GET'])
+def roomInformations(request):
+    if request.GET['id']:
+        YOUTUBE_STATUS_CHOICES = {0: 'Sem transmissão', 1: 'Em andamento', 2: 'Transmissão encerrada', 3: 'Cancelada'}
+        try:
+           queryset = Room.objects.get(pk=request.GET['id'])
+        except Exception as e:
+            print(e)
+            return Response({"message": "Essa sala não existe!"})
+        valid_coupon_data = {
+            "id": queryset.id,
+            "n_usuarios": queryset.online_users,
+            "estado": YOUTUBE_STATUS_CHOICES[queryset.youtube_status]
+        }
+        return Response(valid_coupon_data)
+    else:
+        return Response({"message": "Identifique o id da sala! (ex: http://localhost:8000/api/roomInformations?id=1)"})
+        
+@api_view(['GET'])
+def systemStatus(request):
+    return Response({"estado": "ativo"})
 
 @api_view(['GET'])
 def api_root(request, format=None):
