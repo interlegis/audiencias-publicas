@@ -327,6 +327,10 @@ LOGGING = {
             'propagate': False,
             'level': 'DEBUG',
         },
+        'mozilla_django_oidc': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        }
     },
 }
 
