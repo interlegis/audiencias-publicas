@@ -8,6 +8,7 @@ from apps.core.views import (VideoDetail, RoomQuestionList, ClosedVideos,
                              delete_attachment, add_external_link,
                              remove_external_link, create_video_attachment,
                              delete_video, order_videos, censorship)
+from django.contrib.auth.decorators import login_required
 from apps.core import api
 
 
@@ -21,7 +22,7 @@ urlpatterns = [
         name='set_question_answered'),
     url(r'^pergunta/(?P<question_id>\d+)/prioritaria/?$', set_priotity,
         name='set_question_priotity'),
-    url(r'^sala/(?P<pk>\d+)/?$', VideoDetail.as_view(), name='video_room'),
+    url(r'^sala/(?P<pk>\d+)/?$', login_required(VideoDetail.as_view()), name='video_room'),
     url(r'^sala/(?P<room_id>\d+)/anexo/adicionar/?$', create_attachment,
         name='create_attachment'),
     url(r'^anexo/(?P<attachment_id>\d+)/deletar/?$', delete_attachment,

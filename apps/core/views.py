@@ -20,6 +20,8 @@ from itertools import chain
 from constance import config
 from apps.core.forms import RoomAttachmentForm, VideoForm
 from apps.accounts.models import UserProfile
+from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import MultiValueDictKeyError
 import requests
 import json
 
@@ -179,22 +181,16 @@ def set_priotity(request, question_id):
 
 
 def index(request):
-    return render(request, 'index.html', context=dict(
-        closed_videos=Room.objects.filter(
-            youtube_status=2,
-            is_visible=True,
-            is_active=True).order_by('-date')[:5],
-        live_videos=Room.objects.filter(
-            youtube_status=1,
-            is_visible=True,
-            is_active=True).order_by('-date'),
-        agendas=Room.objects.filter(
-            is_active=True,
-            is_visible=True,
-            youtube_status=0,
-            date__gte=date.today()).order_by('date'),
-    ))
-
+        try:
+            request.session['_old_post'] = {"sala": request.GET['sala'], "url_escola": request.GET['url_escola'], "cod_curso": request.GET['cod_curso']}
+            return redirect('http://localhost:8000/oidc/authenticate')
+        except MultiValueDictKeyError as e:
+            try:
+                user_cursos = requests.get('http://localhost:3000/api/v1/registros?key='+ request.user.profile.access_key +'&cpf=' + request.user.username)
+                # print("\n\nsala = " + request.session['_old_post']['sala'] + "\nurl_escola = " + request.session['_old_post']['url_escola'] + "\ncod_curso: " + request.session['_old_post']['cod_curso'])
+                return redirect('/sala/' + request.session['_old_post']['sala'])
+            except (AttributeError, KeyError) as e:
+                return render(request, 'error.html')
 
 def create_attachment(request, room_id):
     if request.user.is_authenticated() and request.method == 'POST':
@@ -326,10 +322,8 @@ class VideoDetail(DetailView):
         return context
 
     def get_object(self, queryset=None):
-        profile = UserProfile.objects.get(user_id = self.request.user.id)
-        print("DSFASDFAS")
-        print(profile.access_key)
-        print("DSFASDFAS")
+        # profile = UserProfile.objects.get(user_id = self.request.user.id)
+        # print(profile.access_key)
         # Fazer requisição e tratar
         obj = super(VideoDetail, self).get_object(queryset=queryset)
         if obj.is_active:

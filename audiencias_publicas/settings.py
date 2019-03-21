@@ -72,15 +72,16 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = (
     'GET',
-    'OPTIONS'
+    'OPTIONS',
+    'POST'
 )
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'apps.core.permissions.ApiKeyPermission',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'apps.core.permissions.ApiKeyPermission',
+    # ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
@@ -278,12 +279,10 @@ OAUTH2_PROVIDER = {
 if config('ENABLE_REMOTE_USER', default=0, cast=bool):
     AUTHENTICATION_BACKENDS = (
         'apps.core.login.MyOIDCAB',
-        'django.contrib.auth.backends.ModelBackend',
     )
 else:
     AUTHENTICATION_BACKENDS = (
         'apps.core.login.MyOIDCAB',
-        'django.contrib.auth.backends.ModelBackend',
     )
 
 # Email configuration
