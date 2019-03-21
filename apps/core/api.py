@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import filters, viewsets
-from apps.core.models import Message, Question, UpDownVote, Room
+from apps.core.models import Message, Question, UpDownVote, Room, Video
 from apps.core.serializers import (QuestionSerializer, MessageSerializer,
                                    VoteSerializer, UserSerializer,
                                    RoomSerializer)
@@ -144,6 +144,19 @@ def roomInformations(request):
         return Response(valid_coupon_data)
     else:
         return Response({"message": "Identifique o id da sala! (ex: http://localhost:8000/api/roomInformations?id=1)"})
+
+@api_view(['POST'])
+def createRoom(request):
+    try:
+        room = Room.objects.create(title_reunion=request.data['curso'], legislative_body_initials=request.data['sala'], 
+                            legislative_body=request.data['assunto'], reunion_object=request.data['assunto'], 
+                            reunion_theme=request.data['assunto'], youtube_status=1,
+                            date=request.data['data'], id_course=request.data['curso_id'],
+                            school_url=request.data['escola'], is_visible=True)
+        Video.objects.create(room=room, video_id=request.data['video'])
+        return Response({"message": "Sala criada com sucesso!", "id": str(room.id)})
+    except Exception as e:
+        return Response({"message": "Ocorreu um erro! Verifique se todos os parâmetros estão sendo passados"})
         
 @api_view(['GET'])
 def systemStatus(request):
@@ -163,3 +176,5 @@ def api_root(request, format=None):
         'users': reverse('user-list',
                          request=request, format=format),
     })
+
+

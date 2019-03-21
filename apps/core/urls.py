@@ -65,4 +65,6 @@ urlpatterns += [
         name='roomInformations'),
     url(r'^api/systemStatus/?$', api.systemStatus,
         name='systemStatus'),
+    url(r'^api/createRoom/?$', api.createRoom,
+        name='createRoom'),
 ]

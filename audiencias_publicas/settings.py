@@ -73,7 +73,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = (
     'GET',
     'OPTIONS',
-    'POST'
+    'POST',
 )
 
 REST_FRAMEWORK = {
@@ -278,10 +278,12 @@ OAUTH2_PROVIDER = {
 # Social auth
 if config('ENABLE_REMOTE_USER', default=0, cast=bool):
     AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
         'apps.core.login.MyOIDCAB',
     )
 else:
     AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
         'apps.core.login.MyOIDCAB',
     )
 

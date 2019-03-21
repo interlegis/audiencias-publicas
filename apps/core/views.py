@@ -182,13 +182,23 @@ def set_priotity(request, question_id):
 
 def index(request):
         try:
-            request.session['_old_post'] = {"sala": request.GET['sala'], "url_escola": request.GET['url_escola'], "cod_curso": request.GET['cod_curso']}
+            request.session['sala'] = request.GET['sala']
             return redirect('http://localhost:8000/oidc/authenticate')
         except MultiValueDictKeyError as e:
+            print(request.session['sala'])
             try:
+                room = Room.objects.get(id = request.session['sala'])
                 user_cursos = requests.get('http://localhost:3000/api/v1/registros?key='+ request.user.profile.access_key +'&cpf=' + request.user.username)
-                # print("\n\nsala = " + request.session['_old_post']['sala'] + "\nurl_escola = " + request.session['_old_post']['url_escola'] + "\ncod_curso: " + request.session['_old_post']['cod_curso'])
-                return redirect('/sala/' + request.session['_old_post']['sala'])
+                # Mudar para webservice do moodle
+                # Verifica se usuário está matriculado no curso
+                # usuario = requests.get(room.school_url+ '?key='+ request.user.profile.access_key +'&cpf=' + request.user.username + '&curso_id=' + room.id_course)
+                # if usuario:
+                #     return redirect('/sala/' + request.session['sala'])
+                cursos = user_cursos.json()
+                for curso in cursos['cursos_usuario']:
+                    if curso['course']['id'] == room.id_course:
+                        return redirect('/sala/' + request.session['sala'])
+                return render(request, 'error.html')
             except (AttributeError, KeyError) as e:
                 return render(request, 'error.html')
 

@@ -36,6 +36,8 @@ class Room(TimestampedMixin):
     )
     cod_reunion = models.CharField(_('code reunion'), max_length=200,
                                    null=True, blank=True)
+    id_course = models.IntegerField(_('id_course'), null=False)
+    school_url = models.CharField(_('school_url'),  max_length=100,null=False)
     title_reunion = models.CharField(_('title reunion'), max_length=200,
                                      null=True, blank=True)
     legislative_body_initials = models.CharField(
